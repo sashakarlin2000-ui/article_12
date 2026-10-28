@@ -1,0 +1,30 @@
+# Конфигурация модуля определения режимов рынка
+n_clusters: 4
+method: kmeans          # kmeans | gmm | hmm
+features:
+  - return_5d
+  - volatility_20d
+  - distance_from_MA20
+  - distance_from_MA200
+scaler: standard
+random_state: 42
+smoothing_window: 3
+train_end_date: "2022-12-31"
+
+gmm:
+  covariance_type: full
+  n_init: 5
+  max_iter: 200
+
+hmm:
+  n_iter: 100
+  covariance_type: diag
+
+kmeans:
+  n_init: 10
+  max_iter: 300
+
+output:
+  data_path: "data/processed/market_data_with_regime.csv"
+  tables_dir: "results/tables"
+  figures_dir: "results/figures"
