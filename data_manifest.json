@@ -1,7 +1,7 @@
 {
   "file": "market_data.csv",
-  "dataset_sha256": "33438bb71840fc0d004f86ab6885202758a7b27566f9f23d39500a66c475eb06",
-  "n_rows": 13890,
+  "dataset_sha256": "54697ca57d6dee569b3e39b67e0e5f88b50d6294b56514a5b4e56f6680e05224",
+  "n_rows": 13884,
   "n_tickers": 6,
   "tickers": [
     "AAPL",
@@ -12,7 +12,7 @@
     "TSLA"
   ],
   "date_start": "2017-07-26",
-  "date_end": "2026-10-09",
+  "date_end": "2026-10-08",
   "columns": [
     "Date",
     "Open",
@@ -52,5 +52,5 @@
     "target": 0
   },
   "duplicates": 0,
-  "generated_at": "2026-10-29 10:55:36.439238"
+  "generated_at": "2026-10-29 18:53:06.215269"
 }
