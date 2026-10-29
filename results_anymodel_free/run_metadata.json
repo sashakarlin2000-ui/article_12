@@ -1,0 +1,19 @@
+{
+  "data": "data/processed/market_data_with_regime.csv",
+  "days": 60,
+  "tickers": [
+    "AAPL"
+  ],
+  "top_k": 3,
+  "models_requested": [
+    "anymodel:am/gpt-oss-20b",
+    "anymodel:am/nemotron-3.5-lightning-30b-a3b"
+  ],
+  "models_used": [
+    "anymodel:am/gpt-oss-20b",
+    "anymodel:am/nemotron-3.5-lightning-30b-a3b"
+  ],
+  "models_disabled": {},
+  "n_successful_responses": 240,
+  "elapsed_sec": 0.0
+}

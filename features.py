@@ -1,3 +1,7 @@
+import hashlib
+import json
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 from data_loader import fetch_market_data
@@ -68,19 +72,49 @@ def clean_dataset(df):
     
     return df
 
+def build_manifest(df, csv_path="market_data.csv"):
+    """
+    data_manifest.json: схема колонок, период, тикеры, пропуски, хеш файла.
+    Результаты связаны с конкретной версией датасета.
+    """
+    csv_path = Path(csv_path)
+    content = csv_path.read_bytes()
+    return {
+        "file": csv_path.name,
+        "dataset_sha256": hashlib.sha256(content).hexdigest(),
+        "n_rows": int(len(df)),
+        "n_tickers": int(df["Ticker"].nunique()),
+        "tickers": sorted(df["Ticker"].unique().tolist()),
+        "date_start": str(df["Date"].min().date()),
+        "date_end": str(df["Date"].max().date()),
+        "columns": list(df.columns),
+        "missing_per_column": {
+            col: int(df[col].isna().sum()) for col in df.columns
+        },
+        "duplicates": int(df.duplicated(subset=["Date", "Ticker"]).sum()),
+        "generated_at": str(pd.Timestamp.now()),
+    }
+
 if __name__ == "__main__":
     print("--- Шаг 1: Загрузка данных ---")
     raw_data = fetch_market_data()
-    
+
     print("\n--- Шаг 2: Расчет признаков ---")
     df_features = add_features(raw_data)
-    
+
     print("\n--- Шаг 3: Очистка данных ---")
     final_df = clean_dataset(df_features)
-    
+
     print("\n--- Шаг 4: Сохранение в файл market_data.csv ---")
     final_df.to_csv("market_data.csv", index=False)
-    
+
+    print("\n--- Шаг 5: Манифест датасета ---")
+    manifest = build_manifest(final_df)
+    Path("data_manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
     print(f"Готово! Итоговый файл сохранен. Размер датасета: {final_df.shape}")
     print("\Первые 5 строк готового датасета:")
     print(final_df.head())

@@ -1,0 +1,124 @@
+# ============================================================================
+# experiment_config.yaml — замороженный протокол исследования (Роль 7, Этап 2)
+# Протокол зафиксирован ДО финального тестирования. Любые изменения фиксируются
+# в changelog с датой и причиной.
+# ============================================================================
+
+project: "Прогнозирование фондового рынка: режимы, исторические аналоги и ансамбль LLM"
+run_id: "e1-e6-2026-10-29"
+
+# --- Данные (Роль 1) ---
+data:
+  source: "yfinance, дневные данные"
+  tickers: ["SPX", "AAPL", "MSFT", "NVDA", "AMZN", "TSLA"]
+  frequency: "1d"
+  raw_columns: ["Date", "Open", "High", "Low", "Close", "Volume", "Ticker"]
+  features_file: "market_data.csv"
+  manifest: "data_manifest.json"
+
+# --- Целевая переменная и горизонт ---
+target:
+  definition: "1 если Close(T+1) > Close(T), иначе 0"
+  horizon: 1  # торговый день
+
+# --- Разделение периодов (фиксируется заранее) ---
+split:
+  train_start: "2017-07-26"
+  train_end: "2022-12-31"
+  validation_start: "2023-01-03"
+  validation_end: "2025-06-30"
+  test_start: "2025-07-01"
+  embargo_days: 1
+  scheme: "walk-forward"   # окна идут последовательно, будущее не используется
+
+# --- Режимы рынка (Роль 2) ---
+regime:
+  method: "kmeans"
+  n_clusters: 4
+  features: ["return_5d", "volatility_20d", "distance_from_MA20", "distance_from_MA200"]
+  train_end_date: "2022-12-31"
+  smoothing_window: 3
+  labels: ["Bull", "Bear", "Sideways", "High Volatility"]
+  config_file: "src/config_regime.yaml"
+  output_file: "data/processed/market_data_with_regime.csv"
+
+# --- Retrieval (Роль 3) ---
+retrieval:
+  features: ["return_5d", "volatility_5d", "volatility_20d", "RSI", "distance_from_MA20", "distance_from_MA200"]
+  metric: "cosine"
+  top_k: 3
+  mode_standard: true
+  mode_regime_aware: true
+  target_end_date_filter: true   # аналоговое окно исхода должно закончиться до T
+  normalization: "StandardScaler по допустимой истории"
+
+# --- LLM (Роль 4) ---
+llm:
+  providers_available: ["openai", "mock"]
+  provider_default: "mock"          # ПРОТОКОЛ: mock до подключения реальных ключей
+  generation_params:
+    temperature: 0.2
+  max_retries: 2
+  cache_dir: "llm_cache"
+  log_file: "results/llm/llm_prompts_log.jsonl"
+  input_format: "RFC 8259 (см. llm_predictor.build_llm_payload)"
+  output_format: "RFC 8259 (см. llm_predictor.parse_llm_output)"
+
+# --- Ensemble (Роль 5) ---
+ensemble:
+  methods:
+    - "majority_voting"
+    - "confidence_weighted_voting"
+    - "regime_weighted_voting"
+  default_method: "confidence_weighted_voting"
+  hold_tiebreak: "HOLD используется только при ничьей направленных голосов"
+  weights_default: "equal weights (fallback)"
+  weights_source: "validation period; финальный test для выбора весов запрещён"
+
+# --- Backtest (Роль 6) ---
+backtest:
+  entry_time: "по закрытию дня T"
+  exit_time: "закрытие T+1"
+  position_size: 1.0
+  allow_short: true
+  long_only_variant: true
+  commission: 0.001
+  slippage: 0.0005
+  hold_rule: "нет позиции"
+  benchmark: "Buy & Hold"
+
+# --- Метрики ---
+metrics:
+  classification: ["accuracy", "balanced_accuracy", "precision", "recall", "f1", "mcc", "confusion_matrix", "brier_score", "log_loss"]
+  trading: ["cumulative_return", "annualized_return", "sharpe_ratio", "max_drawdown", "volatility", "win_rate", "turnover", "n_trades", "commissions"]
+
+# --- Эксперименты E1-E6 ---
+experiments:
+  E1: "наивные baseline и классические ML"       # TODO: добавить simple-mean / logistic baseline
+  E2: "одна LLM без retrieval"
+  E3: "LLM с обычным retrieval"
+  E4: "LLM с regime-aware retrieval"
+  E5: "ансамбль фиксированными весами"
+  E6: "regime-aware retrieval + режимные веса"
+
+# --- Статистика ---
+statistics:
+  walk_forward_windows: "все прогнозы на одинаковых датах"
+  uncertainty: "block bootstrap по дням"
+  paired_test: "сравнение систем на одинаковых датах"
+
+# --- Запуск ---
+pipeline:
+  script: "pipeline.py"
+  defaults:
+    last_n_days: 60
+    top_k: 3
+    providers: ["mock:momentum", "mock:reversion", "mock:rsi"]
+  outputs:
+    predictions: "predictions.csv"
+    predictions_regime_aware: "predictions_regime_aware.csv"
+    retrieval_standard: "retrieval_records.csv"
+    retrieval_regime: "retrieval_records_regime.csv"
+    results_classification: "results/results_classification.csv"
+    results_trading: "results/results_trading.csv"
+    equity_curve: "results/equity_curve.png"

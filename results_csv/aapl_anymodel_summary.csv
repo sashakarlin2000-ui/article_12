@@ -1,0 +1,5 @@
+config,n_predictions,mean_accuracy,mean_mcc
+standard_majority_voting,60,0.2833,-0.0083
+standard_confidence_weighted_voting,60,0.4833,0.0416
+regime-aware_majority_voting,60,0.2833,-0.0835
+regime-aware_confidence_weighted_voting,60,0.4833,-0.0168

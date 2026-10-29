@@ -253,3 +253,88 @@ class TestMakeEnsembleDecision(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+# --- Режимно-зависимые веса (Роль 5) ---
+import pytest as _pytest
+
+from ensemble import (
+    REGIME_WEIGHTED_VOTING,
+    default_regime_weights,
+    make_ensemble_decision,
+    normalise_regime_weights,
+    regime_weighted_voting,
+)
+
+
+def test_default_regime_weights_structure():
+    models = ["gpt", "gemini"]
+    table = default_regime_weights(models)
+    assert "default" in table
+    for regime in ("Bull", "Bear", "Sideways", "High Volatility"):
+        assert table[regime] == {"gpt": 1.0, "gemini": 1.0}
+
+
+def test_regime_weighted_respects_weights():
+    responses = [
+        {"model": "gpt", "prediction": "UP", "confidence": 0.9},
+        {"model": "deepseek", "prediction": "DOWN", "confidence": 0.9},
+    ]
+    weights = {
+        "Bull": {"gpt": 3.0, "deepseek": 0.1},
+        "Bear": {"gpt": 0.1, "deepseek": 3.0},
+        "default": {"gpt": 1.0, "deepseek": 1.0},
+    }
+    bull = regime_weighted_voting(responses, weights, regime="Bull")
+    bear = regime_weighted_voting(responses, weights, regime="Bear")
+    assert bull["prediction"] == "UP"
+    assert bear["prediction"] == "DOWN"
+
+
+def test_regime_fallback_to_default():
+    responses = [{"model": "gpt", "prediction": "UP", "confidence": 0.9}]
+    weights = {
+        "default": {"gpt": 2.0},
+        "Bull": {"gpt": 1.0},
+    }
+    result = regime_weighted_voting(responses, weights, regime="Crash")
+    assert result["weights_regime_used"] == "default"
+    assert result["prediction"] == "UP"
+
+
+def test_unknown_model_gets_weight_one():
+    responses = [{"model": "new_model", "prediction": "HOLD", "confidence": 0.5}]
+    weights = default_regime_weights(["gpt"])
+    result = regime_weighted_voting(responses, weights, regime="Bull")
+    assert result["prediction"] == "HOLD"
+    assert result["applied_weights"][0]["weight"] == 1.0
+
+
+def test_regime_method_without_weights_raises():
+    responses = [{"model": "gpt", "prediction": "UP", "confidence": 0.9}]
+    with _pytest.raises(ValueError):
+        make_ensemble_decision(responses, method=REGIME_WEIGHTED_VOTING)
+
+
+def test_normalise_raises_on_missing_default():
+    with _pytest.raises(ValueError):
+        normalise_regime_weights({"Bull": {"gpt": 1.0}})
+
+
+def test_normalise_raises_on_negative_weight():
+    with _pytest.raises(ValueError):
+        normalise_regime_weights(
+            {"default": {"gpt": -1.0}}
+        )
+
+
+def test_weights_not_affected_by_confidence_not_breaking():
+    responses = [
+        {"model": "gpt", "prediction": "UP", "confidence": 0.2},
+        {"model": "gpt", "prediction": "DOWN", "confidence": 0.9},
+    ]
+    weights = {
+        "default": {"gpt": 10.0},
+        "Bull": {"gpt": 10.0},
+    }
+    result = regime_weighted_voting(responses, weights, regime="Bull")
+    assert result["prediction"] == "DOWN"

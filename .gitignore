@@ -10,3 +10,25 @@ env/
 # Настройки редакторов кода
 .vscode/
 .idea/
+# LLM cache и логи
+llm_cache/
+llm_cache_test/
+
+# результаты прогонов
+results/
+results_regime/
+*_preds.csv
+
+# большие артефакты
+equity_curve.png
+
+# real LLM runs
+llm_cache_real/
+llm_cache_pilot/
+results_real/
+results_real_pilot/
+llm_cache_spot/
+results_spot/
+llm_cache_test/
+results_regime/
+*.jsonl

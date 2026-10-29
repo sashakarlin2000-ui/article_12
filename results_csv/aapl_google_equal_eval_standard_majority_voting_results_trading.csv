@@ -1,0 +1,2 @@
+ticker,n_days,cumulative_return,annualized_return,sharpe_ratio,max_drawdown,volatility,win_rate,total_turnover,n_trades,commissions_total,slippage_total,buy_hold_cumulative_return
+AAPL,50,0.1250052267623043,0.8105848516598164,2.59631366790918,-0.08933626247150794,0.24001847097146606,0.4,32.0,24,0.032,0.016,0.016495626187070567

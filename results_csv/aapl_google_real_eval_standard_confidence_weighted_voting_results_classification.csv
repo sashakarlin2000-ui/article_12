@@ -1,0 +1,2 @@
+ticker,n_days,accuracy,balanced_accuracy,precision,recall,f1,mcc,brier_score,log_loss
+AAPL,6,0.5,0.5,0.16666666666666666,0.3333333333333333,0.2222222222222222,0.0,0.25251862999999997,0.6998479074990653

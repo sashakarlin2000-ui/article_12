@@ -1,7 +1,13 @@
 """Фикстуры для тестов модуля режимов."""
+import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 @pytest.fixture
@@ -38,6 +44,7 @@ def sample_df() -> pd.DataFrame:
 @pytest.fixture
 def config_path(tmp_path):
     """Временный YAML-конфиг."""
+    tmp = str(Path(tmp_path).as_posix())
     cfg = tmp_path / "config_regime.yaml"
     cfg.write_text(
         """
@@ -51,7 +58,7 @@ features:
 scaler: standard
 random_state: 42
 smoothing_window: 3
-train_end_date: "2021-06-30"
+train_end_date: "2020-12-31"
 kmeans:
   n_init: 5
   max_iter: 100
@@ -59,7 +66,7 @@ output:
   data_path: "{tmp}/data.csv"
   tables_dir: "{tmp}/tables"
   figures_dir: "{tmp}/figures"
-""".format(tmp=str(tmp_path)),
+""".format(tmp=tmp),
         encoding="utf-8",
     )
     return cfg

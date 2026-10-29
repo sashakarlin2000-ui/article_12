@@ -1,5 +1,6 @@
-<<<<<<< HEAD
-# Описание датасета (Market Data)
+# Прогнозирование фондового рынка с помощью LLM, режимов рынка и исторического поиска
+
+## 0. Описание датасета (Market Data)
 
 Файл `market_data.csv` содержит дневные исторические данные по индексам и акциям за последние 10 лет (^GSPC, AAPL, MSFT, NVDA, AMZN, TSLA).
 
@@ -15,8 +16,6 @@
 - `distance_from_MA20` / `distance_from_MA200` — Относительное отклонение цены от MA.
 - `RSI` — Индикатор относительной силы (14 дней).
 - `target` — Целевая переменная: 1, если на следующий день цена закрытия выросла; 0 — если упала или осталась прежней.
-=======
-# Прогнозирование фондового рынка с помощью LLM, режимов рынка и исторического поиска
 
 ## 1. Описание проекта
 
@@ -234,4 +233,51 @@ project/
 На текущем этапе команда занимается разработкой отдельных модулей и подготовкой экспериментальной инфраструктуры.
 
 Все выводы об эффективности метода будут сделаны после проведения экспериментов и анализа полученных результатов.
->>>>>>> 79470eeb59d7bb03e0e73ab86aed89a694b6447e
+
+## 13. Состав модулей и сквозной запуск
+
+| Модуль | Роль | Назначение |
+|---|---|---|
+| `data_loader.py`, `features.py` | 1 | Загрузка yfinance, расчёт признаков, `data_manifest.json` |
+| `src/regime_detector.py`, `src/regime_utils.py`, `src/config_regime.yaml` | 2 | KMeans/GMM/HMM режимы, защита от утечки |
+| `retrieval.py`, `generate_retrieval_records.py` | 3 | Обычный и regime-aware поиск аналогов |
+| `llm_predictor.py` | 4 | Единый JSON вход/выход, кэш, логи, mock/OpenAI-провайдеры |
+| `ensemble.py` | 5 | Majority, confidence-средневзвешенное, режимные веса |
+| `backtest.py`, `metrics.py` | 6 | Комиссии/slippage, long-only, торговые и классификационные метрики |
+| `pipeline.py` | 7 | Сквозной запуск по всем модулям |
+
+### Сквозной запуск
+
+```bash
+# 1. Данные (если не собраны): скачивает и пересобирает market_data.csv
+python features.py
+
+# 2. Режимы рынка
+python src/regime_detector.py --config src/config_regime.yaml --input market_data.csv
+
+# 3. Сквозной прогон конвейера (по умолчанию mock-LLM)
+python pipeline.py --last-n-days 60 --output predictions.csv --output-dir results
+
+# Regime-aware вариант (E4/E6)
+python pipeline.py --last-n-days 60 --retrieval-mode regime-aware \
+    --output predictions_regime_aware.csv --output-dir results_regime
+```
+
+### Подключение реальных LLM (Роль 4)
+
+```bash
+# Ключ задаётся переменной окружения — секреты не хранятся в репозитории
+export OPENAI_API_KEY="sk-..."
+
+python pipeline.py --providers openai:gpt-4o-mini openai:gpt-4.1-mini
+```
+
+Пока используются mock-провайдеры — детерминированные правила-заглушки без утечки будущих данных. Их ответы не являются результатами исследования реальных LLM: выводы о методе делаются только после подключения настоящих моделей.
+
+### Тесты
+
+```bash
+pytest                    # все модули
+pytest tests/             # режимы
+pytest test_llm_predictor.py test_pipeline.py   # LLM и интеграция
+```

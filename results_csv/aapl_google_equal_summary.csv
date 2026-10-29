@@ -1,0 +1,11 @@
+config,n_predictions,mean_accuracy,mean_balanced_accuracy,mean_f1,mean_mcc,mean_cumulative_return,mean_sharpe
+single_gemini-3.1-flash-lite_standard,50,0.32,0.3221,0.2955,0.1878,0.166,6.1781
+single_gemini-3.1-flash-lite_regime-aware,49,0.2857,0.2887,0.271,0.1582,0.1287,5.042
+single_gemini-3.5-flash-lite_standard,50,0.28,0.2724,0.2291,0.1243,0.0502,1.21
+single_gemini-3.5-flash-lite_regime-aware,49,0.1633,0.1481,0.1301,-0.0261,-0.0771,-2.0279
+single_gemma-4-31b-it_standard,50,0.48,0.4744,0.3533,0.1705,0.1287,2.4696
+single_gemma-4-31b-it_regime-aware,49,0.4286,0.4141,0.303,0.0312,0.0484,1.0913
+standard_majority_voting,50,0.42,0.4183,0.344,0.1884,0.125,2.5963
+standard_confidence_weighted_voting,50,0.42,0.4183,0.3397,0.1711,0.1029,2.1398
+regime-aware_majority_voting,49,0.3061,0.303,0.2607,0.0451,0.0048,0.2216
+regime-aware_confidence_weighted_voting,49,0.3061,0.303,0.2572,0.0286,-0.0005,0.1019
