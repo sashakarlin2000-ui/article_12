@@ -23,12 +23,16 @@ results_regime/
 equity_curve.png
 
 # real LLM runs
+.env
 llm_cache_real/
 llm_cache_pilot/
 results_real/
+results_real_*/
+llm_cache_*/
 results_real_pilot/
 llm_cache_spot/
 results_spot/
 llm_cache_test/
 results_regime/
 *.jsonl
+.env

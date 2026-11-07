@@ -1,0 +1,17 @@
+{
+  "data": "data/processed/market_data_with_regime.csv",
+  "days": 1,
+  "tickers": [
+    "NVDA"
+  ],
+  "top_k": 3,
+  "models_requested": [
+    "gemini2:gemini-3.1-flash-lite"
+  ],
+  "models_used": [
+    "gemini:gemini-3.1-flash-lite"
+  ],
+  "models_disabled": {},
+  "n_successful_responses": 1,
+  "elapsed_sec": 31.6
+}

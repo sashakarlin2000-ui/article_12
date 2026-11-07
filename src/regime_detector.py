@@ -148,7 +148,7 @@ class RegimeDetector:
     def _smooth(self, df: pd.DataFrame, window: int) -> pd.DataFrame:
         """Rolling majority vote по каждому тикеру отдельно."""
         def _majority(s: pd.Series) -> pd.Series:
-            return s.rolling(window, min_periods=1, center=True).apply(
+            return s.rolling(window, min_periods=1, center=False).apply(
                 lambda x: pd.Series(x).mode().iloc[0], raw=False
             )
         df["market_regime"] = (

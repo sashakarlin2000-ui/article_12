@@ -8,3 +8,4 @@ pyyaml>=6.0
 pytest>=8.0.0
 hmmlearn>=0.3.0 ; python_version < "3.13"
 openai>=1.0.0 ; python_version >= "3.8"
+python-dotenv>=1.0.0

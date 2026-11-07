@@ -1,0 +1,36 @@
+{
+  "data": "data/processed/market_data_with_regime.csv",
+  "days": 60,
+  "tickers": [
+    "AAPL",
+    "AMZN",
+    "MSFT",
+    "NVDA",
+    "SPX",
+    "TSLA"
+  ],
+  "top_k": 3,
+  "models_requested": [
+    "ollama:gpt-oss:20b",
+    "ollama:gpt-oss:120b",
+    "ollama:gemma4:31b",
+    "ollama:nemotron-3-nano:30b",
+    "ollama:nemotron-3-ultra"
+  ],
+  "models_used": [
+    "ollamacloud:gpt-oss:20b",
+    "ollamacloud:gpt-oss:120b",
+    "ollamacloud:gemma4:31b",
+    "ollamacloud:nemotron-3-nano:30b",
+    "ollamacloud:nemotron-3-ultra"
+  ],
+  "models_disabled": {
+    "ollamacloud:gpt-oss:120b": "ollamacloud:gpt-oss:120b 2026-08-28: provider_error: https://ollama.com/v1 вернул 429: {\"error\":{\"message\":\"you (sashakarlin2000) have reached your monthly usag",
+    "ollamacloud:gemma4:31b": "ollamacloud:gemma4:31b 2026-08-28: provider_error: https://ollama.com/v1 вернул 429: {\"error\":{\"message\":\"you (sashakarlin2000) have reached your monthly usage ",
+    "ollamacloud:nemotron-3-ultra": "ollamacloud:nemotron-3-ultra 2026-08-28: provider_error: https://ollama.com/v1 вернул 429: {\"error\":{\"message\":\"you (sashakarlin2000) have reached your monthly ",
+    "ollamacloud:nemotron-3-nano:30b": "ollamacloud:nemotron-3-nano:30b 2026-08-31: provider_error: https://ollama.com/v1 вернул 429: {\"error\":{\"message\":\"you (sashakarlin2000) have reached your month",
+    "ollamacloud:gpt-oss:20b": "ollamacloud:gpt-oss:20b 2026-08-31: provider_error: https://ollama.com/v1 вернул 429: {\"error\":{\"message\":\"you (sashakarlin2000) have reached your monthly usage"
+  },
+  "n_successful_responses": 242,
+  "elapsed_sec": 373.3
+}

@@ -10,8 +10,8 @@
 - circuit breaker: модель с серией ошибок отключается до конца прогона,
   чтобы не жечь квоту на 429/401.
 
-Ключи берутся только из переменных окружения:
-OPENROUTER_API_KEY, GEMINI_API_KEY.
+Ключи берутся из переменных окружения или локального .env:
+OPENROUTER_API_KEY, GEMINI_API_KEY, ANYMODEL_API_KEY.
 """
 
 import argparse
@@ -23,6 +23,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import pandas as pd
+from dotenv import load_dotenv
 
 from ensemble import (
     CONFIDENCE_WEIGHTED_VOTING,
@@ -31,13 +32,19 @@ from ensemble import (
 )
 from llm_predictor import (
     AnymodelProvider,
+    CloudflareWorkersAIProvider,
     GeminiProvider,
+    GroqProvider,
+    OllamaCloudProvider,
+    OrcaRouterProvider,
     OpenRouterProvider,
     predict_for_day,
     safe_name,
 )
 from pipeline import FEATURES_FOR_LLM, REGIME_LABEL_COLUMN, evaluate_predictions
 from retrieval import find_similar_days
+
+load_dotenv()
 
 DEFAULT_MODELS = [
     "gemini:gemini-3.1-flash-lite",
@@ -83,8 +90,18 @@ def build_provider(name):
     kind, model = name.split(":", 1)
     if kind == "gemini":
         return GeminiProvider(model_name=model)
+    if kind == "gemini2":
+        return GeminiProvider(model_name=model, api_key_env="GEMINI_2")
     if kind == "openrouter":
         return OpenRouterProvider(model_name=model)
+    if kind == "orca":
+        return OrcaRouterProvider(model_name=model)
+    if kind == "groq":
+        return GroqProvider(model_name=model)
+    if kind == "ollama":
+        return OllamaCloudProvider(model_name=model)
+    if kind == "cloudflare":
+        return CloudflareWorkersAIProvider(model_name=model)
     if kind == "anymodel":
         if model.startswith(("am/nemotron", "am/gpt-oss")):
             max_tokens = 4096
@@ -104,9 +121,7 @@ def preflight(provider):
         raw = provider.complete(prompt, temperature=0.0, max_retries=0)
     except Exception as exc:
         text = str(exc)
-        if any(m in text.lower() for m in AUTH_ERROR_MARKERS):
-            return False, text[:200]
-        return True, f"kept despite: {text[:120]}"
+        return False, text[:200]
     return True, raw[:80]
 
 
@@ -116,21 +131,24 @@ def payload_for(row, data, retrieval_mode, top_k):
     regime = row.get(REGIME_LABEL_COLUMN)
     regime = None if pd.isna(regime) else str(regime)
 
-    retrieval = find_similar_days(
-        current_day=pd.Timestamp(date),
-        ticker=ticker,
-        top_k=top_k,
-        data=data,
-        regime_aware=(retrieval_mode == "regime-aware"),
-    )
-    similar_days = [
-        {
-            "date": item["date"],
-            "similarity": item["similarity"],
-            "regime": item.get("regime"),
-        }
-        for item in retrieval["similar_days"]
-    ]
+    if retrieval_mode == "no-retrieval":
+        similar_days = []
+    else:
+        retrieval = find_similar_days(
+            current_day=pd.Timestamp(date),
+            ticker=ticker,
+            top_k=top_k,
+            data=data,
+            regime_aware=(retrieval_mode == "regime-aware"),
+        )
+        similar_days = [
+            {
+                "date": item["date"],
+                "similarity": item["similarity"],
+                "regime": item.get("regime"),
+            }
+            for item in retrieval["similar_days"]
+        ]
     features = {}
     for source_col, payload_name in FEATURES_FOR_LLM.items():
         if source_col in row.index and pd.notna(row[source_col]):
@@ -156,7 +174,24 @@ def load_store(path):
             except Exception:
                 continue
             if rec.get("status") == "ok":
-                done[(rec["date"], rec["ticker"], rec["retrieval_mode"], rec["model"])] = rec
+                key = (
+                    rec["date"],
+                    rec["ticker"],
+                    rec["retrieval_mode"],
+                    rec["model"],
+                )
+                done[key] = rec
+                # Keep the CLI provider name stable when a provider's
+                # implementation name differs from its CLI prefix.
+                model = rec.get("model", "")
+                if model.startswith("ollamacloud:"):
+                    alias = (
+                        rec["date"],
+                        rec["ticker"],
+                        rec["retrieval_mode"],
+                        "ollama:" + model.split(":", 1)[1],
+                    )
+                    done[alias] = rec
     return done
 
 
@@ -247,7 +282,9 @@ def build_predictions(jobs, store, ensemble_method, retrieval_mode):
             r = dict(rec["response"])
             r["model"] = r.get("model") or model
             responses.append(r)
-        if not responses:
+        # A comparison is valid only when every requested model answered for
+        # the same date, ticker, and retrieval mode.
+        if failed or len(responses) != len(job["models"]):
             continue
         decision = make_ensemble_decision(
             responses, method=ensemble_method, regime=p["market_regime"],
@@ -279,10 +316,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default="data/processed/market_data_with_regime.csv")
     ap.add_argument("--days", type=int, default=60)
+    ap.add_argument(
+        "--end-date",
+        default=None,
+        help="Последняя дата окна YYYY-MM-DD (по умолчанию последняя доступная)",
+    )
     ap.add_argument("--tickers", nargs="*", default=None)
     ap.add_argument("--top-k", type=int, default=3)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--models", nargs="*", default=DEFAULT_MODELS)
+    ap.add_argument(
+        "--modes", nargs="*",
+        default=["standard", "regime-aware"],
+        choices=["standard", "regime-aware", "no-retrieval"],
+    )
     ap.add_argument("--max-fail-streak", type=int, default=8)
     ap.add_argument("--rpm", type=int, default=12,
                     help="Лимит запросов в минуту на модель (0 = без лимита)")
@@ -307,10 +354,13 @@ def main():
         td = data[data["Ticker"].astype(str) == ticker].sort_values("Date")
         has_next = td["Close"].shift(-1).notna()
         dates = td.loc[has_next, "Date"].sort_values().unique()
+        if args.end_date:
+            end_date = pd.Timestamp(args.end_date)
+            dates = dates[dates <= end_date.to_datetime64()]
         window = [pd.Timestamp(d) for d in dates[-args.days:]]
         for date in window:
             row = td[td["Date"] == date].iloc[-1]
-            for mode in ("standard", "regime-aware"):
+            for mode in args.modes:
                 payload = payload_for(row, data, mode, args.top_k)
                 jobs.append({
                     "payload": payload,
@@ -389,10 +439,9 @@ def main():
     )
 
     configs = [
-        ("standard", MAJORITY_VOTING),
-        ("standard", CONFIDENCE_WEIGHTED_VOTING),
-        ("regime-aware", MAJORITY_VOTING),
-        ("regime-aware", CONFIDENCE_WEIGHTED_VOTING),
+        (mode, method)
+        for mode in args.modes
+        for method in (MAJORITY_VOTING, CONFIDENCE_WEIGHTED_VOTING)
     ]
     summary = []
     for mode, method in configs:

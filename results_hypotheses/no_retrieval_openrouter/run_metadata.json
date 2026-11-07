@@ -1,0 +1,28 @@
+{
+  "data": "data/processed/market_data_with_regime.csv",
+  "days": 60,
+  "tickers": [
+    "AAPL",
+    "AMZN",
+    "MSFT",
+    "NVDA",
+    "SPX",
+    "TSLA"
+  ],
+  "top_k": 3,
+  "models_requested": [
+    "openrouter:google/gemma-4-31b-it:free",
+    "openrouter:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "openrouter:nvidia/nemotron-3-ultra-550b-a55b:free"
+  ],
+  "models_used": [
+    "openrouter:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "openrouter:nvidia/nemotron-3-ultra-550b-a55b:free"
+  ],
+  "models_disabled": {
+    "openrouter:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": "openrouter:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free 2026-09-16: provider_error: https://openrouter.ai/api/v1 вернул 429: {\"error\":{\"message\":\"Rate lim",
+    "openrouter:nvidia/nemotron-3-ultra-550b-a55b:free": "openrouter:nvidia/nemotron-3-ultra-550b-a55b:free 2026-09-22: provider_error: https://openrouter.ai/api/v1 вернул 429: {\"error\":{\"message\":\"Rate limit exceeded:"
+  },
+  "n_successful_responses": 149,
+  "elapsed_sec": 170.5
+}

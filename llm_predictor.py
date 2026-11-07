@@ -115,6 +115,7 @@ def parse_llm_output(raw):
     text = raw.strip()
     # Gemma (через Gemini API), MiniMax и некоторые reasoning-модели
     # оборачивают ответ в служебный блок — убираем его целиком
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
     text = re.sub(r"<thought>.*?</thought>", "", text, flags=re.DOTALL)
     text = re.sub(r"<mm:think>.*?</mm:think>", "", text, flags=re.DOTALL)
     text = re.sub(r" openid", "", text, flags=re.DOTALL)
@@ -368,6 +369,97 @@ class OrcaRouterProvider(OpenAIChatProvider):
             api_key_env=api_key_env,
             base_url="https://api.orcarouter.ai/v1",
         )
+
+
+class GroqProvider(OpenAIChatProvider):
+    """Groq (https://console.groq.com) — OpenAI-совместимый API.
+
+    Ключ берётся из переменной окружения GROQ_API_KEY.
+    """
+
+    def __init__(self, model_name, api_key_env="GROQ_API_KEY"):
+        super().__init__(
+            model_name=model_name,
+            api_key_env=api_key_env,
+            base_url="https://api.groq.com/openai/v1",
+        )
+
+
+class OllamaCloudProvider(OpenAIChatProvider):
+    """Ollama Cloud OpenAI-compatible API.
+
+    Ключ берётся из переменной окружения OLLAMA_API_KEY.
+    """
+
+    def __init__(self, model_name, api_key_env="OLLAMA_API_KEY"):
+        super().__init__(
+            model_name=model_name,
+            api_key_env=api_key_env,
+            base_url="https://ollama.com/v1",
+        )
+
+
+class CloudflareWorkersAIProvider(LLMProvider):
+    """Cloudflare Workers AI REST API.
+
+    Ключ и аккаунт берутся из CLOUDFLARE_API_KEY и ACCOUNT_ID.
+    """
+
+    def __init__(
+        self,
+        model_name,
+        api_key_env="CLOUDFLARE_API_KEY",
+        account_id_env="ACCOUNT_ID",
+    ):
+        self.model_name = model_name
+        self.api_key_env = api_key_env
+        self.account_id_env = account_id_env
+
+    def name(self):
+        return f"cloudflare:{self.model_name}"
+
+    def complete(self, prompt, temperature=0.2, max_retries=2):
+        import requests
+
+        api_key = os.environ.get(self.api_key_env)
+        account_id = os.environ.get(self.account_id_env)
+        if not api_key or not account_id:
+            raise RuntimeError(
+                f"Задайте переменные окружения {self.api_key_env} и "
+                f"{self.account_id_env}"
+            )
+
+        response = requests.post(
+            "https://api.cloudflare.com/client/v4/accounts/"
+            f"{account_id}/ai/run/{self.model_name}",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "messages": [
+                    {"role": "system", "content": "You output only JSON."},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": temperature,
+            },
+            timeout=120,
+        )
+        if response.status_code != 200:
+            raise RuntimeError(
+                f"Cloudflare Workers AI вернул {response.status_code}: "
+                f"{response.text[:300]}"
+            )
+
+        body = response.json()
+        result = body.get("result", {})
+        if isinstance(result, dict):
+            choices = result.get("choices")
+            if choices:
+                return choices[0]["message"]["content"]
+            if "response" in result:
+                return result["response"]
+        raise RuntimeError("Cloudflare не вернул текстовый ответ модели")
 
 
 class GeminiProvider(OpenAIChatProvider):
