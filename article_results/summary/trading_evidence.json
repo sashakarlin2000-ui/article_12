@@ -1,0 +1,383 @@
+{
+  "methods": {
+    "legacy": "Signal uses Close(t); return Close(t+1)/Close(t)-1; UP=+1 DOWN=-1 HOLD=0; transition cost 0.15% times change in position; no terminal liquidation, excludes initial capital from drawdown peak; matching saved backtest, optimistic execution.",
+    "next_open": "At next Open(t+1) take forecast position, close at Close(t+1); UP=+1 DOWN=-1 HOLD=0; each nonzero position pays 0.15% per side, 0.30% round trip; initial equity included in drawdown; no borrowing, financing or impact; SPX is an index proxy, not directly tradable."
+  },
+  "aggregation": "Arithmetic mean of 6 independently compounded per-asset returns, Sharpe, max drawdown; not portfolio return or portfolio Sharpe. 60 predictions per ticker and 60 next-session entries 2026-07-17 through 2026-10-09. 252 trading days, zero risk-free rate, sample std ddof=1.",
+  "saved_csv_validation": [
+    {
+      "system": "Gemma 4/standard",
+      "matched_tickers": 6,
+      "saved_csv_tickers": 6,
+      "max_abs_err": 5.773159728050814e-15
+    },
+    {
+      "system": "Gemma 4/regime-aware",
+      "matched_tickers": 6,
+      "saved_csv_tickers": 6,
+      "max_abs_err": 7.216449660063518e-15
+    },
+    {
+      "system": "Nemotron Nano/standard",
+      "matched_tickers": 6,
+      "saved_csv_tickers": 6,
+      "max_abs_err": 1.3766765505351941e-14
+    },
+    {
+      "system": "Nemotron Nano/regime-aware",
+      "matched_tickers": 6,
+      "saved_csv_tickers": 6,
+      "max_abs_err": 9.769962616701378e-15
+    },
+    {
+      "system": "Nemotron Ultra/standard",
+      "matched_tickers": 1,
+      "saved_csv_tickers": 1,
+      "max_abs_err": 5.551115123125783e-16
+    },
+    {
+      "system": "Nemotron Ultra/regime-aware",
+      "matched_tickers": 1,
+      "saved_csv_tickers": 1,
+      "max_abs_err": 3.3306690738754696e-15
+    },
+    {
+      "system": "GPT-OSS CW/standard",
+      "matched_tickers": 6,
+      "saved_csv_tickers": 6,
+      "max_abs_err": 1.0658141036401503e-14
+    },
+    {
+      "system": "GPT-OSS CW/regime-aware",
+      "matched_tickers": 6,
+      "saved_csv_tickers": 6,
+      "max_abs_err": 7.757683384568281e-15
+    }
+  ],
+  "results": [
+    {
+      "system": "OSS 20B/standard",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.013932711887209145,
+      "mean_sharpe": -0.22804953883069953,
+      "mean_max_drawdown": -0.16295916255740156
+    },
+    {
+      "system": "OSS 20B/standard",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.12284329960196168,
+      "mean_sharpe": -3.1608275346381567,
+      "mean_max_drawdown": -0.18524693897391054
+    },
+    {
+      "system": "OSS 20B/regime-aware",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.020180773258193434,
+      "mean_sharpe": -0.2794678586933125,
+      "mean_max_drawdown": -0.1593028546884932
+    },
+    {
+      "system": "OSS 20B/regime-aware",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.12290817962823108,
+      "mean_sharpe": -3.3482737425953633,
+      "mean_max_drawdown": -0.17167958449159706
+    },
+    {
+      "system": "OSS 120B/standard",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.04548827702582312,
+      "mean_sharpe": 0.44243116813248723,
+      "mean_max_drawdown": -0.12387160461472206
+    },
+    {
+      "system": "OSS 120B/standard",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.08289817554622074,
+      "mean_sharpe": -2.567144706582884,
+      "mean_max_drawdown": -0.14586386489733932
+    },
+    {
+      "system": "OSS 120B/regime-aware",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.069409702691559,
+      "mean_sharpe": 0.9301348714365786,
+      "mean_max_drawdown": -0.10708378410864117
+    },
+    {
+      "system": "OSS 120B/regime-aware",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.07434139513362632,
+      "mean_sharpe": -2.2725838218419407,
+      "mean_max_drawdown": -0.14431747549464477
+    },
+    {
+      "system": "Gemma 4/standard",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.05462315958567702,
+      "mean_sharpe": 0.84194165864556,
+      "mean_max_drawdown": -0.09713997193915287
+    },
+    {
+      "system": "Gemma 4/standard",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.0831256718545767,
+      "mean_sharpe": -2.225792329903066,
+      "mean_max_drawdown": -0.13275528935042613
+    },
+    {
+      "system": "Gemma 4/regime-aware",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.03045504232136394,
+      "mean_sharpe": 0.69916271275535,
+      "mean_max_drawdown": -0.09692471921361302
+    },
+    {
+      "system": "Gemma 4/regime-aware",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.09414805828204886,
+      "mean_sharpe": -2.5120944407676635,
+      "mean_max_drawdown": -0.13506923134037538
+    },
+    {
+      "system": "Nemotron Nano/standard",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.03145704286068418,
+      "mean_sharpe": 0.44730799295975104,
+      "mean_max_drawdown": -0.12356804393993559
+    },
+    {
+      "system": "Nemotron Nano/standard",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.05651825295687374,
+      "mean_sharpe": -1.8487825879724105,
+      "mean_max_drawdown": -0.1256716181659315
+    },
+    {
+      "system": "Nemotron Nano/regime-aware",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.10555673678634668,
+      "mean_sharpe": 0.5963121444606889,
+      "mean_max_drawdown": -0.11316423856576341
+    },
+    {
+      "system": "Nemotron Nano/regime-aware",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.062100291077560155,
+      "mean_sharpe": -2.0793212409582367,
+      "mean_max_drawdown": -0.1294700872398439
+    },
+    {
+      "system": "Nemotron Ultra/standard",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.04010989889678681,
+      "mean_sharpe": 0.6372427174969987,
+      "mean_max_drawdown": -0.09444381375267054
+    },
+    {
+      "system": "Nemotron Ultra/standard",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.09443303972767952,
+      "mean_sharpe": -2.9034566111002182,
+      "mean_max_drawdown": -0.13995476273304944
+    },
+    {
+      "system": "Nemotron Ultra/regime-aware",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.0023996988366136174,
+      "mean_sharpe": 0.45601704296708795,
+      "mean_max_drawdown": -0.1083348875502323
+    },
+    {
+      "system": "Nemotron Ultra/regime-aware",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.07386348114339171,
+      "mean_sharpe": -1.9588254719380227,
+      "mean_max_drawdown": -0.12051379051950535
+    },
+    {
+      "system": "GPT-OSS CW/standard",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.06722770122885968,
+      "mean_sharpe": 0.8625991465589481,
+      "mean_max_drawdown": -0.10391278862371088
+    },
+    {
+      "system": "GPT-OSS CW/standard",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.0647278726149913,
+      "mean_sharpe": -2.091390289931132,
+      "mean_max_drawdown": -0.13613649067170291
+    },
+    {
+      "system": "GPT-OSS CW/regime-aware",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.09700455418457794,
+      "mean_sharpe": 1.1226827654669824,
+      "mean_max_drawdown": -0.10507647588280972
+    },
+    {
+      "system": "GPT-OSS CW/regime-aware",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.06610687504340768,
+      "mean_sharpe": -2.1041331401763834,
+      "mean_max_drawdown": -0.14170860584431874
+    },
+    {
+      "system": "OSS 20B/no-retrieval openrouter",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.049481572581349276,
+      "mean_sharpe": -0.5652935991185096,
+      "mean_max_drawdown": -0.14226050077357205
+    },
+    {
+      "system": "OSS 20B/no-retrieval openrouter",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.09155762779549509,
+      "mean_sharpe": -1.9844146585285802,
+      "mean_max_drawdown": -0.14252819866675076
+    },
+    {
+      "system": "OSS 120B/no-retrieval openrouter",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.015832101898409816,
+      "mean_sharpe": 0.190699250935196,
+      "mean_max_drawdown": -0.10129907501607675
+    },
+    {
+      "system": "OSS 120B/no-retrieval openrouter",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.03683063906425177,
+      "mean_sharpe": -1.3041041586158462,
+      "mean_max_drawdown": -0.07237237702979686
+    },
+    {
+      "system": "baseline/naive_majority",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.08500243134684,
+      "mean_sharpe": 1.1501062769631065,
+      "mean_max_drawdown": -0.10805161276170029
+    },
+    {
+      "system": "baseline/naive_majority",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.14742771537853414,
+      "mean_sharpe": -3.838415199117195,
+      "mean_max_drawdown": -0.17593003879643024
+    },
+    {
+      "system": "baseline/logistic_regression",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.01824864703578057,
+      "mean_sharpe": 0.411822042699492,
+      "mean_max_drawdown": -0.14060117770769764
+    },
+    {
+      "system": "baseline/logistic_regression",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.18685229705169706,
+      "mean_sharpe": -4.510008308737486,
+      "mean_max_drawdown": -0.20777607912392196
+    },
+    {
+      "system": "baseline/random_forest",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.04751355310826242,
+      "mean_sharpe": -0.1983304861610566,
+      "mean_max_drawdown": -0.1702073953887416
+    },
+    {
+      "system": "baseline/random_forest",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.18017640874528804,
+      "mean_sharpe": -4.398855731628071,
+      "mean_max_drawdown": -0.20359257915511283
+    },
+    {
+      "system": "baseline/intraday_always_long",
+      "method": "legacy",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": 0.08500243134684,
+      "mean_sharpe": 1.1501062769631065,
+      "mean_max_drawdown": -0.10805161276170029
+    },
+    {
+      "system": "baseline/intraday_always_long",
+      "method": "next_open",
+      "n_pairs": 360,
+      "n_tickers": 6,
+      "mean_cumulative_return": -0.14742771537853414,
+      "mean_sharpe": -3.838415199117195,
+      "mean_max_drawdown": -0.17593003879643024
+    }
+  ]
+}

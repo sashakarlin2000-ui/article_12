@@ -1,0 +1,495 @@
+{
+  "source": "User archive res.zip + public dataset/code at commit ac0159ba9cce58fb57d7cb0048a00c7ccf70cb6a",
+  "target_dataset_sha256": "db6a71368a869ca59d710c3fc3e7456bc80b574fae4655a994ace0967c3bda22",
+  "target_alignment": "ticker/date and target; excluding unknown subsequent close by using preexisting 60-day prediction windows",
+  "hold": "counted as classification error on binary UP/DOWN target",
+  "mcc": "macro mean of multiclass MCC per ticker, HOLD retained as a predicted class",
+  "bootstrap": "paired moving-block bootstrap, consecutive blocks of 5 dates with all assets together; 5000 resamples; seed 1701; exploratory within this one observed window",
+  "duplicate_policy": "last successful record per ticker,date,mode,model consistent with current load_store; comparison against first successful; not assumed pre-registered",
+  "metrics": {
+    "OSS 20B/standard": {
+      "n": 360,
+      "correct": 144,
+      "accuracy": 0.4,
+      "macro_balanced_accuracy": 0.3986425617527687,
+      "macro_mcc": -0.02825399141459758,
+      "hold": 61,
+      "active_accuracy": 0.4816053511705686
+    },
+    "OSS 20B/regime-aware": {
+      "n": 360,
+      "correct": 152,
+      "accuracy": 0.4222222222222222,
+      "macro_balanced_accuracy": 0.42450008653569293,
+      "macro_mcc": -0.03247437467469302,
+      "hold": 44,
+      "active_accuracy": 0.4810126582278481
+    },
+    "OSS 120B/standard": {
+      "n": 360,
+      "correct": 143,
+      "accuracy": 0.3972222222222222,
+      "macro_balanced_accuracy": 0.4022402767027356,
+      "macro_mcc": -0.002085938493216062,
+      "hold": 71,
+      "active_accuracy": 0.49480968858131485
+    },
+    "OSS 120B/regime-aware": {
+      "n": 360,
+      "correct": 145,
+      "accuracy": 0.4027777777777778,
+      "macro_balanced_accuracy": 0.4070002978350335,
+      "macro_mcc": 7.29234384082821e-05,
+      "hold": 70,
+      "active_accuracy": 0.5
+    },
+    "Gemma 4/standard": {
+      "n": 360,
+      "correct": 135,
+      "accuracy": 0.375,
+      "macro_balanced_accuracy": 0.3873089378010068,
+      "macro_mcc": 0.06279275101665184,
+      "hold": 107,
+      "active_accuracy": 0.5335968379446641
+    },
+    "Gemma 4/regime-aware": {
+      "n": 360,
+      "correct": 138,
+      "accuracy": 0.38333333333333336,
+      "macro_balanced_accuracy": 0.3932361303531254,
+      "macro_mcc": 0.05460498923208502,
+      "hold": 99,
+      "active_accuracy": 0.5287356321839081
+    },
+    "Nemotron Nano/standard": {
+      "n": 360,
+      "correct": 139,
+      "accuracy": 0.3861111111111111,
+      "macro_balanced_accuracy": 0.39493382407569294,
+      "macro_mcc": 0.00737945257226466,
+      "hold": 80,
+      "active_accuracy": 0.49642857142857144
+    },
+    "Nemotron Nano/regime-aware": {
+      "n": 360,
+      "correct": 134,
+      "accuracy": 0.37222222222222223,
+      "macro_balanced_accuracy": 0.37451840053243335,
+      "macro_mcc": 0.010020373454300957,
+      "hold": 95,
+      "active_accuracy": 0.5056603773584906
+    },
+    "Nemotron Ultra/standard": {
+      "n": 360,
+      "correct": 134,
+      "accuracy": 0.37222222222222223,
+      "macro_balanced_accuracy": 0.3805180723009611,
+      "macro_mcc": 0.028474547797228227,
+      "hold": 96,
+      "active_accuracy": 0.5075757575757576
+    },
+    "Nemotron Ultra/regime-aware": {
+      "n": 360,
+      "correct": 138,
+      "accuracy": 0.38333333333333336,
+      "macro_balanced_accuracy": 0.39130678056783225,
+      "macro_mcc": 0.03428571357424333,
+      "hold": 92,
+      "active_accuracy": 0.5149253731343284
+    },
+    "GPT-OSS CW/standard": {
+      "n": 360,
+      "correct": 140,
+      "accuracy": 0.3888888888888889,
+      "macro_balanced_accuracy": 0.3926094733801871,
+      "macro_mcc": 0.001196517338099524,
+      "hold": 81,
+      "active_accuracy": 0.5017921146953405
+    },
+    "GPT-OSS MV/standard": {
+      "n": 360,
+      "correct": 101,
+      "accuracy": 0.28055555555555556,
+      "macro_balanced_accuracy": 0.2803327754114265,
+      "macro_mcc": -0.01944908014634351,
+      "hold": 149,
+      "active_accuracy": 0.4786729857819905
+    },
+    "GPT-OSS CW/regime-aware": {
+      "n": 360,
+      "correct": 149,
+      "accuracy": 0.41388888888888886,
+      "macro_balanced_accuracy": 0.4202990572456975,
+      "macro_mcc": 0.009024692511842312,
+      "hold": 63,
+      "active_accuracy": 0.5016835016835017
+    },
+    "GPT-OSS MV/regime-aware": {
+      "n": 360,
+      "correct": 112,
+      "accuracy": 0.3111111111111111,
+      "macro_balanced_accuracy": 0.31353884138513827,
+      "macro_mcc": -0.007121959460481965,
+      "hold": 132,
+      "active_accuracy": 0.49122807017543857
+    },
+    "OSS 20B/no-retrieval openrouter": {
+      "n": 360,
+      "correct": 113,
+      "accuracy": 0.3138888888888889,
+      "macro_balanced_accuracy": 0.31090942659415716,
+      "macro_mcc": -0.0051666667974256475,
+      "hold": 135,
+      "active_accuracy": 0.5022222222222222
+    },
+    "OSS 20B/no-retrieval Ollama": {
+      "n": 25,
+      "correct": 6,
+      "accuracy": 0.24,
+      "macro_balanced_accuracy": 0.23717948717948717,
+      "macro_mcc": -0.1785065140377122,
+      "hold": 8,
+      "active_accuracy": 0.35294117647058826
+    },
+    "OSS 120B/no-retrieval openrouter": {
+      "n": 360,
+      "correct": 95,
+      "accuracy": 0.2638888888888889,
+      "macro_balanced_accuracy": 0.26914781271904326,
+      "macro_mcc": 0.05462928544062532,
+      "hold": 188,
+      "active_accuracy": 0.5523255813953488
+    },
+    "OSS 120B/no-retrieval Ollama": {
+      "n": 24,
+      "correct": 6,
+      "accuracy": 0.25,
+      "macro_balanced_accuracy": 0.24475524475524477,
+      "macro_mcc": -0.08607442947128612,
+      "hold": 10,
+      "active_accuracy": 0.42857142857142855
+    },
+    "baseline/naive_majority": {
+      "n": 360,
+      "correct": 176,
+      "accuracy": 0.4888888888888889,
+      "macro_balanced_accuracy": 0.5,
+      "macro_mcc": 0.0,
+      "hold": 0,
+      "active_accuracy": 0.4888888888888889
+    },
+    "baseline/logistic_regression": {
+      "n": 360,
+      "correct": 170,
+      "accuracy": 0.4722222222222222,
+      "macro_balanced_accuracy": 0.48657090383020146,
+      "macro_mcc": -0.04070353922765511,
+      "hold": 0,
+      "active_accuracy": 0.4722222222222222
+    },
+    "baseline/random_forest": {
+      "n": 360,
+      "correct": 175,
+      "accuracy": 0.4861111111111111,
+      "macro_balanced_accuracy": 0.49766071783871296,
+      "macro_mcc": -0.008126921020227178,
+      "hold": 0,
+      "active_accuracy": 0.4861111111111111
+    }
+  },
+  "paired": {
+    "OSS 20B regime vs standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.4,
+      "accuracy_b": 0.4222222222222222,
+      "delta_b_minus_a": 0.0222222222222222,
+      "bootstrap_95": [
+        -0.01111111111111111,
+        0.06388888888888888
+      ]
+    },
+    "OSS 120B regime vs standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.3972222222222222,
+      "accuracy_b": 0.4027777777777778,
+      "delta_b_minus_a": 0.005555555555555591,
+      "bootstrap_95": [
+        -0.03333333333333334,
+        0.036111111111111115
+      ]
+    },
+    "Gemma 4 regime vs standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.375,
+      "accuracy_b": 0.38333333333333336,
+      "delta_b_minus_a": 0.00833333333333336,
+      "bootstrap_95": [
+        -0.008333333333333333,
+        0.02777777777777778
+      ]
+    },
+    "Nemotron Nano regime vs standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.3861111111111111,
+      "accuracy_b": 0.37222222222222223,
+      "delta_b_minus_a": -0.013888888888888895,
+      "bootstrap_95": [
+        -0.05555555555555555,
+        0.02777777777777778
+      ]
+    },
+    "Nemotron Ultra regime vs standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.37222222222222223,
+      "accuracy_b": 0.38333333333333336,
+      "delta_b_minus_a": 0.011111111111111127,
+      "bootstrap_95": [
+        -0.024999999999999998,
+        0.04444444444444444
+      ]
+    },
+    "OSS 20B OpenRouter no vs Ollama standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.3138888888888889,
+      "accuracy_b": 0.4,
+      "delta_b_minus_a": 0.08611111111111114,
+      "bootstrap_95": [
+        0.047152777777777787,
+        0.13333333333333333
+      ]
+    },
+    "OSS 20B Ollama no vs Ollama standard": {
+      "pairs": 25,
+      "dates": 25,
+      "accuracy_a": 0.24,
+      "accuracy_b": 0.32,
+      "delta_b_minus_a": 0.08000000000000002,
+      "bootstrap_95": [
+        0.0,
+        0.2
+      ]
+    },
+    "OSS 20B OpenRouter no vs Ollama regime-aware": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.3138888888888889,
+      "accuracy_b": 0.4222222222222222,
+      "delta_b_minus_a": 0.10833333333333334,
+      "bootstrap_95": [
+        0.06666666666666667,
+        0.16388888888888886
+      ]
+    },
+    "OSS 20B Ollama no vs Ollama regime-aware": {
+      "pairs": 25,
+      "dates": 25,
+      "accuracy_a": 0.24,
+      "accuracy_b": 0.4,
+      "delta_b_minus_a": 0.16000000000000003,
+      "bootstrap_95": [
+        0.04,
+        0.24
+      ]
+    },
+    "OSS 120B OpenRouter no vs Ollama standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.2638888888888889,
+      "accuracy_b": 0.3972222222222222,
+      "delta_b_minus_a": 0.1333333333333333,
+      "bootstrap_95": [
+        0.10000000000000002,
+        0.18333333333333338
+      ]
+    },
+    "OSS 120B Ollama no vs Ollama standard": {
+      "pairs": 24,
+      "dates": 24,
+      "accuracy_a": 0.25,
+      "accuracy_b": 0.3333333333333333,
+      "delta_b_minus_a": 0.08333333333333331,
+      "bootstrap_95": [
+        0.0,
+        0.16666666666666666
+      ]
+    },
+    "OSS 120B OpenRouter no vs Ollama regime-aware": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.2638888888888889,
+      "accuracy_b": 0.4027777777777778,
+      "delta_b_minus_a": 0.1388888888888889,
+      "bootstrap_95": [
+        0.09722222222222222,
+        0.1888888888888889
+      ]
+    },
+    "OSS 120B Ollama no vs Ollama regime-aware": {
+      "pairs": 24,
+      "dates": 24,
+      "accuracy_a": 0.25,
+      "accuracy_b": 0.375,
+      "delta_b_minus_a": 0.125,
+      "bootstrap_95": [
+        0.0,
+        0.25
+      ]
+    },
+    "CW vs MV standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.28055555555555556,
+      "accuracy_b": 0.3888888888888889,
+      "delta_b_minus_a": 0.10833333333333334,
+      "bootstrap_95": [
+        0.09166666666666666,
+        0.12777777777777777
+      ]
+    },
+    "CW vs OSS 20B standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.4,
+      "accuracy_b": 0.3888888888888889,
+      "delta_b_minus_a": -0.011111111111111127,
+      "bootstrap_95": [
+        -0.05277777777777778,
+        0.03888888888888889
+      ]
+    },
+    "CW vs OSS 120B standard": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.3972222222222222,
+      "accuracy_b": 0.3888888888888889,
+      "delta_b_minus_a": -0.008333333333333304,
+      "bootstrap_95": [
+        -0.030555555555555555,
+        0.01388888888888889
+      ]
+    },
+    "CW vs MV regime-aware": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.3111111111111111,
+      "accuracy_b": 0.41388888888888886,
+      "delta_b_minus_a": 0.10277777777777775,
+      "bootstrap_95": [
+        0.058333333333333334,
+        0.14444444444444443
+      ]
+    },
+    "CW vs OSS 20B regime-aware": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.4222222222222222,
+      "accuracy_b": 0.41388888888888886,
+      "delta_b_minus_a": -0.00833333333333336,
+      "bootstrap_95": [
+        -0.05555555555555556,
+        0.030555555555555555
+      ]
+    },
+    "CW vs OSS 120B regime-aware": {
+      "pairs": 360,
+      "dates": 60,
+      "accuracy_a": 0.4027777777777778,
+      "accuracy_b": 0.41388888888888886,
+      "delta_b_minus_a": 0.011111111111111072,
+      "bootstrap_95": [
+        -0.01388888888888889,
+        0.03888888888888889
+      ]
+    }
+  },
+  "csv_reconciliation": {
+    "GPT-OSS CW/standard": {
+      "csv_rows": 360,
+      "common": 360,
+      "unequal": 0
+    },
+    "Gemma 4/standard": {
+      "csv_rows": 360,
+      "common": 360,
+      "unequal": 0
+    },
+    "Nemotron Nano/standard": {
+      "csv_rows": 360,
+      "common": 360,
+      "unequal": 0
+    },
+    "Nemotron Ultra/standard": {
+      "csv_rows": 60,
+      "common": 60,
+      "unequal": 0
+    },
+    "GPT-OSS CW/regime-aware": {
+      "csv_rows": 360,
+      "common": 360,
+      "unequal": 0
+    },
+    "Gemma 4/regime-aware": {
+      "csv_rows": 360,
+      "common": 360,
+      "unequal": 0
+    },
+    "Nemotron Nano/regime-aware": {
+      "csv_rows": 360,
+      "common": 360,
+      "unequal": 0
+    },
+    "Nemotron Ultra/regime-aware": {
+      "csv_rows": 60,
+      "common": 60,
+      "unequal": 0
+    }
+  },
+  "ultra_first": {
+    "standard": {
+      "n": 360,
+      "correct": 135,
+      "accuracy": 0.375,
+      "macro_balanced_accuracy": 0.3821032172284973,
+      "macro_mcc": 0.034794900141702306,
+      "hold": 98,
+      "active_accuracy": 0.5152671755725191,
+      "vs_last": {
+        "pairs": 360,
+        "dates": 60,
+        "accuracy_a": 0.375,
+        "accuracy_b": 0.37222222222222223,
+        "delta_b_minus_a": -0.002777777777777768,
+        "bootstrap_95": [
+          -0.013888888888888888,
+          0.008333333333333333
+        ]
+      }
+    },
+    "regime-aware": {
+      "n": 360,
+      "correct": 137,
+      "accuracy": 0.38055555555555554,
+      "macro_balanced_accuracy": 0.3888558001756754,
+      "macro_mcc": 0.03129559851873935,
+      "hold": 93,
+      "active_accuracy": 0.5131086142322098,
+      "vs_last": {
+        "pairs": 360,
+        "dates": 60,
+        "accuracy_a": 0.38055555555555554,
+        "accuracy_b": 0.38333333333333336,
+        "delta_b_minus_a": 0.0027777777777778234,
+        "bootstrap_95": [
+          -0.01111111111111111,
+          0.013888888888888888
+        ]
+      }
+    }
+  }
+}

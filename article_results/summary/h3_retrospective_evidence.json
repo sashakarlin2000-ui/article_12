@@ -1,0 +1,116 @@
+{
+  "status": "retrospective exploratory; this 60-day window was previously examined; not blinded or prespecified; not validation period in original config; same regime data may contain look-ahead in naming",
+  "selection": "only first 40 dates; candidates w20/w120 0.5, 1, 2; one shared fixed weight chosen by classification accuracy; regime weights chosen by same score on regime subset; ties closest to equal; minimum 30 rows else fallback fixed; HOLD treated as error",
+  "model_mode": "ollama GPT-OSS 20b,120b regime-aware retrieval",
+  "train": {
+    "start": "2026-07-16",
+    "end": "2026-09-10",
+    "n": 240,
+    "regime_counts": {
+      "Bull": 84,
+      "Sideways": 114,
+      "Bear": 42
+    },
+    "fixed_weight20_relative_120": 2.0,
+    "fixed_candidates": [
+      {
+        "weight": 0.5,
+        "correct": 98
+      },
+      {
+        "weight": 1.0,
+        "correct": 98
+      },
+      {
+        "weight": 2.0,
+        "correct": 100
+      }
+    ],
+    "regime_weights20_relative_120": {
+      "Bear": 1.0,
+      "Bull": 1.0,
+      "Sideways": 2.0
+    },
+    "regime_candidates": {
+      "Bear": [
+        {
+          "weight": 0.5,
+          "correct": 23
+        },
+        {
+          "weight": 1.0,
+          "correct": 23
+        },
+        {
+          "weight": 2.0,
+          "correct": 23
+        }
+      ],
+      "Bull": [
+        {
+          "weight": 0.5,
+          "correct": 37
+        },
+        {
+          "weight": 1.0,
+          "correct": 37
+        },
+        {
+          "weight": 2.0,
+          "correct": 37
+        }
+      ],
+      "Sideways": [
+        {
+          "weight": 0.5,
+          "correct": 38
+        },
+        {
+          "weight": 1.0,
+          "correct": 38
+        },
+        {
+          "weight": 2.0,
+          "correct": 40
+        }
+      ]
+    }
+  },
+  "test": {
+    "start": "2026-09-11",
+    "end": "2026-10-08",
+    "n": 120,
+    "regime_counts": {
+      "Sideways": 92,
+      "Bear": 9,
+      "Bull": 19
+    },
+    "fixed": {
+      "correct": 52,
+      "n": 120,
+      "accuracy": 0.43333333333333335,
+      "hold": 15,
+      "coverage": 0.875
+    },
+    "regime": {
+      "correct": 53,
+      "n": 120,
+      "accuracy": 0.44166666666666665,
+      "hold": 13,
+      "coverage": 0.8916666666666667
+    },
+    "equal": {
+      "correct": 51,
+      "n": 120,
+      "accuracy": 0.425,
+      "hold": 24,
+      "coverage": 0.8
+    },
+    "accuracy_diff_regime_minus_fixed": 0.008333333333333333,
+    "bootstrap_interval_block5_5000": [
+      0.0,
+      0.025
+    ],
+    "n_different_predictions": 2
+  }
+}
