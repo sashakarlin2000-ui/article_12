@@ -1,0 +1,2 @@
+Date,Ticker,Prediction,Probability,Score,Method,Regime,RetrievalMode,NAnalogues,FallbackUsed,ModelsFailed,ModelPredictions
+2026-10-08,AAPL,UP,0.6,0.6,confidence_weighted_voting,Sideways,no-retrieval,0,False,[],"[{""model"": ""groq:openai/gpt-oss-20b"", ""prediction"": ""UP"", ""confidence"": 0.6}]"

@@ -1,0 +1,3 @@
+config,n_predictions,mean_accuracy,mean_mcc
+no-retrieval_majority_voting,1,0.0,0.0
+no-retrieval_confidence_weighted_voting,1,0.0,0.0
